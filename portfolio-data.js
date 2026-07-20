@@ -93,6 +93,13 @@ const portfolioData = {
       description: "Building a real-time plastic detection system."
     },
     {
+      type: "experience",
+      role: "Data Scientist (Intern)",
+      organization: "The National Institute of Statistics, Ministry of Planning",
+      duration: "Jul 2025 - Sep 2025",
+      description: "Building a predictive model for Unmet need for family planning"
+    },
+    {
       type: "education",
       role: "Engineering Degree in Applied Mathematic and Statistics",
       organization: "Institute of Technology of Cambodia",
