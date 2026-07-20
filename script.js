@@ -716,7 +716,7 @@ function initContactForm() {
     });
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     let isFormValid = true;
@@ -727,26 +727,49 @@ function initContactForm() {
     });
 
     if (isFormValid) {
-      // Mock submit success animation
       const submitBtn = document.getElementById('form-submit-btn');
       const originalText = submitBtn.innerHTML;
       
       submitBtn.disabled = true;
       submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sending...`;
       
-      setTimeout(() => {
-        // Show success Toast notification
-        showToast('Message sent successfully! I will get back to you shortly.', 'success');
-        
-        // Reset form details
-        form.reset();
-        inputs.forEach(input => {
-          input.parentNode.classList.remove('invalid');
+      const targetEmail = (typeof portfolioData !== 'undefined' && portfolioData.personal && portfolioData.personal.email) 
+        ? portfolioData.personal.email 
+        : 'kimheangtkd@gmail.com';
+
+      try {
+        const response = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            _subject: `Portfolio Contact: ${subjectInput.value.trim()}`,
+            message: messageInput.value.trim()
+          })
         });
-        
+
+        const data = await response.json();
+
+        if (response.ok && (data.success === 'true' || data.success === true)) {
+          showToast('Message sent successfully! I will get back to you shortly.', 'success');
+          form.reset();
+          inputs.forEach(input => {
+            input.parentNode.classList.remove('invalid');
+          });
+        } else {
+          showToast(data.message || 'Failed to send message. Please try again.', 'error');
+        }
+      } catch (error) {
+        console.error('Contact form submission error:', error);
+        showToast('Unable to send message. Please check your network connection.', 'error');
+      } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
-      }, 1500);
+      }
     } else {
       showToast('Please correct validation errors in the form.', 'error');
     }
