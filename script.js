@@ -760,6 +760,10 @@ function initContactForm() {
           inputs.forEach(input => {
             input.parentNode.classList.remove('invalid');
           });
+        } else if (data.message && data.message.includes('Activation')) {
+          showToast('First-time activation required! Please check kimheangtkd@gmail.com (and Spam folder) to click "Activate Form".', 'error');
+        } else if (data.message && data.message.includes('HTML files')) {
+          showToast('FormSubmit requires hosting (e.g. GitHub Pages) or a local web server (http://localhost).', 'error');
         } else {
           showToast(data.message || 'Failed to send message. Please try again.', 'error');
         }
