@@ -35,16 +35,16 @@ const portfolioData = {
       tech: ["PowerBI", "DAX", "ETL", "Data Modeling", "SQL"],
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
       liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
+      githubLink: "https://github.com/SanKimheang/Sale_dashboard"
     },
     {
       title: "NLP Khmer Semantic Similarity",
       category: "Deep Learning",
-      description: "Developed a deep learning model to evaluate semantic similarity in the Khmer language. Implemented custom word embeddings, Transformers, and fine-tuned pre-trained models to power advanced textual comparison and search tools.",
+      description: "Developed a deep learning model to evaluate semantic similarity in the Khmer language. Implemented custom word embeddings, and fine-tuned pre-trained models to power advanced textual comparison and search tools.",
       tech: ["Python", "PyTorch", "Transformers", "NLP", "Khmer NLP"],
       image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
       liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
+      githubLink: "https://github.com/SanKimheang/khmer_sementic_similarity"
     },
     {
       title: "Real-Time Plastic Detection System",
@@ -53,7 +53,7 @@ const portfolioData = {
       tech: ["Python", "YOLO", "OpenCV", "PyTorch", "Reactjs", "FastAPI", "Docker", "MySQL"],
       image: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&w=800&q=80",
       liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
+      githubLink: "https://github.com/SanKimheang/plastic-detection"
     },
     {
       title: "Electricity Demand Forecasting",
@@ -62,7 +62,7 @@ const portfolioData = {
       tech: ["R programming", "Statsmodels", "Time Series", "ggplot2"],
       image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80",
       liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
+      githubLink: "https://github.com/SanKimheang/electricity_demand_forecasting"
     }
   ],
 
