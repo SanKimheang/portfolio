@@ -38,15 +38,6 @@ const portfolioData = {
       githubLink: "https://github.com/SanKimheang"
     },
     {
-      title: "Customer Churn Prediction Engine",
-      category: "Machine Learning",
-      description: "Developed and trained classification models (Random Forest, XGBoost) to forecast subscriber churn. Performed extensive feature engineering and feature selection, achieving a 91.5% ROC-AUC score.",
-      tech: ["Python", "Scikit-Learn", "Pandas", "Seaborn", "Flask"],
-      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
-      liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
-    },
-    {
       title: "Medical Image Segmentation with CNNs",
       category: "Deep Learning",
       description: "Built a customized U-Net architecture using TensorFlow and Keras to segment structures in medical scans. Integrated advanced data augmentation techniques to prevent overfitting.",
@@ -56,29 +47,29 @@ const portfolioData = {
       githubLink: "https://github.com/SanKimheang"
     },
     {
-      title: "Global Epidemic Trends & Regression Analysis",
-      category: "Statistics",
-      description: "Conducted statistical analysis on multivariate demographic datasets to identify healthcare correlations. Constructed regression and hypothesis tests to establish statistical significance.",
-      tech: ["R Programming", "ggplot2", "Statistics", "dplyr", "R Markdown"],
-      image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=800&q=80",
-      liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
-    },
-    {
-      title: "Interactive Energy Grid Dashboard",
-      category: "PowerBI",
-      description: "Designed a PowerBI dashboard capturing real-time grid metrics, predicting load demand using custom statistical forecasts, and featuring automated alert triggers via DAX logic.",
-      tech: ["PowerBI", "DAX", "Data Modeling", "ETL", "Power Query"],
-      image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80",
-      liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
-    },
-    {
-      title: "NLP Sentiment Analyzer",
+      title: "NLP Khmer Semantic Similarity",
       category: "Deep Learning",
-      description: "Created an LSTM recurrent neural network using TensorFlow to analyze social sentiment trends, parsing over 50,000 tweets with customized tokenization and word embedding layouts.",
-      tech: ["Python", "TensorFlow", "NLP", "Pandas", "NLTK"],
+      description: "Developed a deep learning model to evaluate semantic similarity in the Khmer language. Implemented custom word embeddings, Transformers, and fine-tuned pre-trained models to power advanced textual comparison and search tools.",
+      tech: ["Python", "PyTorch", "Transformers", "NLP", "Khmer NLP"],
       image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
+      liveLink: "#",
+      githubLink: "https://github.com/SanKimheang"
+    },
+    {
+      title: "Real-Time Plastic Detection System",
+      category: "Deep Learning",
+      description: "Designed and deployed a real-time computer vision system to detect and classify plastic waste. Optimized YOLO architecture for edge deployment, achieving high frame-rates and localization accuracy.",
+      tech: ["Python", "YOLO", "OpenCV", "PyTorch", "Reactjs", "FastAPI", "Docker", "MySQL"],
+      image: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&w=800&q=80",
+      liveLink: "#",
+      githubLink: "https://github.com/SanKimheang"
+    },
+    {
+      title: "Electricity Demand Forecasting",
+      category: "Statistics",
+      description: "Constructed advanced statistical and time-series forecasting models (AR, MA, ARMA, ARIMA) to predict electricity consumption, reducing forecasting errors and improving peak load planning.",
+      tech: ["R programming", "Statsmodels", "Time Series", "ggplot2"],
+      image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80",
       liveLink: "#",
       githubLink: "https://github.com/SanKimheang"
     }
@@ -93,18 +84,18 @@ const portfolioData = {
       description: "Building a real-time plastic detection system."
     },
     {
-      type: "experience",
-      role: "Data Scientist (Intern)",
-      organization: "The National Institute of Statistics, Ministry of Planning",
-      duration: "Jul 2025 - Sep 2025",
-      description: "Building a predictive model for Unmet need for family planning"
-    },
-    {
       type: "education",
       role: "Engineering Degree in Applied Mathematic and Statistics",
       organization: "Institute of Technology of Cambodia",
       duration: "2022 - 2026",
       description: "Rigorous training in machine learning algorithms, advanced mathematical analysis, statistical inference, database design, and programming logic. Graduated in Data Science, focusing capstone project on all Data Science and AI field."
+    },
+    {
+      type: "experience",
+      role: "Data Scientist (Intern)",
+      organization: "The National Institute of Statistics, Ministry of Planning",
+      duration: "Jul 2025 - Sep 2025",
+      description: "Building a predictive model for Unmet need for family planning"
     },
     {
       type: "education",
@@ -126,7 +117,7 @@ const portfolioData = {
     {
       icon: "fas fa-brain",
       title: "Predictive Modeling",
-      description: "Building accurate machine learning classifiers and regression engines customized to business objectives using Python and Scikit-Learn."
+      description: "Building accurate machine learning classifiers and regression engines customized to business objectives using Python, Scikit-Learn, TensorFlow, and Pytorch."
     },
     {
       icon: "fas fa-chart-line",
@@ -141,7 +132,17 @@ const portfolioData = {
     {
       icon: "fas fa-calculator",
       title: "Statistical Research",
-      description: "Conducting robust exploratory data analyses, hypothesis testing, A/B testing, and correlation designs in Python and R."
+      description: "Conducting robust exploratory data analyses, hypothesis testing, and correlation designs in Python and R."
+    },
+    {
+      icon: "fas fa-robot",
+      title: "Intelligent Chatbots",
+      description: "Developing intelligent conversational agents and customized chatbots integrated with LLMs, prompt engineering, and context-aware knowledge bases."
+    },
+    {
+      icon: "fas fa-wand-magic-sparkles",
+      title: "Generative AI Solutions",
+      description: "Designing and implementing cutting-edge generative AI workflows, retrieval-augmented generation (RAG) systems, and fine-tuning models to automate business processes."
     }
   ]
 };
