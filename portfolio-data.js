@@ -43,8 +43,8 @@ const portfolioData = {
       description: "Built a customized U-Net architecture using TensorFlow and Keras to segment structures in medical scans. Integrated advanced data augmentation techniques to prevent overfitting.",
       tech: ["Python", "TensorFlow", "Keras", "OpenCV", "Deep Learning"],
       image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=800&q=80",
-      liveLink: "#",
-      githubLink: "https://github.com/SanKimheang"
+      liveLink: "medical-image-segmentation.pdf",
+      githubLink: "#"
     },
     {
       title: "NLP Khmer Semantic Similarity",

@@ -156,8 +156,8 @@ function renderProjects(filterCategory = 'All', searchQuery = '') {
             </a>
           ` : ''}
           ${project.liveLink && project.liveLink !== '#' ? `
-            <a href="${project.liveLink}" target="_blank" rel="noopener" class="btn-card btn-card-primary project-card-action" aria-label="View Live Demo">
-              <i class="fas fa-external-link-alt"></i> Live
+            <a href="${project.liveLink}" target="_blank" rel="noopener" class="btn-card btn-card-primary project-card-action" aria-label="${project.liveLink.endsWith('.pdf') ? 'View PDF document' : 'View Live Demo'}">
+              <i class="${project.liveLink.endsWith('.pdf') ? 'fas fa-file-pdf' : 'fas fa-external-link-alt'}"></i> ${project.liveLink.endsWith('.pdf') ? 'PDF' : 'Live'}
             </a>
           ` : ''}
         </div>
@@ -900,6 +900,11 @@ function initProjectModal() {
     if (project.liveLink && project.liveLink !== '#') {
       mLive.href = project.liveLink;
       mLive.style.display = 'inline-flex';
+      if (project.liveLink.endsWith('.pdf')) {
+        mLive.innerHTML = `View PDF <i class="fas fa-file-pdf icon-right"></i>`;
+      } else {
+        mLive.innerHTML = `Live Demo <i class="fas fa-external-link-alt icon-right"></i>`;
+      }
     } else {
       mLive.style.display = 'none';
     }
