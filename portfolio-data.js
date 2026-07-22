@@ -38,15 +38,6 @@ const portfolioData = {
       githubLink: "https://github.com/SanKimheang"
     },
     {
-      title: "Medical Image Segmentation with CNNs",
-      category: "Deep Learning",
-      description: "Built a customized U-Net architecture using TensorFlow and Keras to segment structures in medical scans. Integrated advanced data augmentation techniques to prevent overfitting.",
-      tech: ["Python", "TensorFlow", "Keras", "OpenCV", "Deep Learning"],
-      image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=800&q=80",
-      liveLink: "machine%20learning%20techniques%20in%20pneumonia%20detection.pdf",
-      githubLink: "#"
-    },
-    {
       title: "NLP Khmer Semantic Similarity",
       category: "Deep Learning",
       description: "Developed a deep learning model to evaluate semantic similarity in the Khmer language. Implemented custom word embeddings, Transformers, and fine-tuned pre-trained models to power advanced textual comparison and search tools.",
