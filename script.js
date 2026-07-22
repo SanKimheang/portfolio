@@ -149,6 +149,18 @@ function renderProjects(filterCategory = 'All', searchQuery = '') {
         <div class="project-tags">
           ${project.tech.map(t => `<span class="project-tag">${t}</span>`).join('')}
         </div>
+        <div class="project-actions">
+          ${project.githubLink && project.githubLink !== '#' ? `
+            <a href="${project.githubLink}" target="_blank" rel="noopener" class="btn-card btn-card-secondary project-card-action" aria-label="View Code on GitHub">
+              <i class="fab fa-github"></i> Code
+            </a>
+          ` : ''}
+          ${project.liveLink && project.liveLink !== '#' ? `
+            <a href="${project.liveLink}" target="_blank" rel="noopener" class="btn-card btn-card-primary project-card-action" aria-label="View Live Demo">
+              <i class="fas fa-external-link-alt"></i> Live
+            </a>
+          ` : ''}
+        </div>
       </div>
     </div>
   `).join('');
@@ -841,6 +853,11 @@ function initProjectModal() {
 
   // Delegate grid clicks
   document.addEventListener('click', (e) => {
+    // If the click is on a direct link button inside the card, do not open the modal
+    if (e.target.closest('.project-card-action')) {
+      return;
+    }
+    
     const card = e.target.closest('.project-card');
     if (card) {
       const index = parseInt(card.getAttribute('data-index'), 10);
