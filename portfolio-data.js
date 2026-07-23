@@ -35,6 +35,7 @@ const portfolioData = {
       tech: ["Python", "YOLO", "OpenCV", "PyTorch", "Reactjs", "FastAPI", "Docker", "MySQL"],
       image: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&w=800&q=80",
       liveLink: "#",
+      videoLink: "video_system_demo.mp4",
       githubLink: "https://github.com/SanKimheang/plastic-detection"
     },
     {

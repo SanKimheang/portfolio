@@ -159,7 +159,11 @@ function renderProjects(filterCategory = 'All', searchQuery = '') {
             <a href="${project.liveLink}" target="_blank" rel="noopener" class="btn-card btn-card-primary project-card-action" aria-label="${project.liveLink.endsWith('.pdf') ? 'View PDF document' : 'View Live Demo'}">
               <i class="${project.liveLink.endsWith('.pdf') ? 'fas fa-file-pdf' : 'fas fa-external-link-alt'}"></i> ${project.liveLink.endsWith('.pdf') ? 'PDF' : 'Live'}
             </a>
-          ` : ''}
+          ` : (project.videoLink ? `
+            <button class="btn-card btn-card-primary btn-card-demo" aria-label="View Project Demo">
+              <i class="fas fa-play"></i> Demo
+            </button>
+          ` : '')}
         </div>
       </div>
     </div>
@@ -880,6 +884,7 @@ function initProjectModal() {
 
   function openModal(project) {
     const mImg = document.getElementById('modal-project-img');
+    const mVideo = document.getElementById('modal-project-video');
     const mCat = document.getElementById('modal-project-category');
     const mTitle = document.getElementById('modal-project-title');
     const mDesc = document.getElementById('modal-project-desc');
@@ -896,6 +901,21 @@ function initProjectModal() {
     
     mTags.innerHTML = project.tech.map(t => `<span class="project-tag">${t}</span>`).join('');
     
+    // Handle video player visibility and source
+    if (mVideo) {
+      if (project.videoLink) {
+        mVideo.src = project.videoLink;
+        mVideo.style.display = 'block';
+        mImg.style.display = 'none';
+        mVideo.load();
+        mVideo.play().catch(err => console.log('Auto-play blocked or failed:', err));
+      } else {
+        mVideo.src = '';
+        mVideo.style.display = 'none';
+        mImg.style.display = 'block';
+      }
+    }
+
     // Hide/show links if present
     if (project.liveLink && project.liveLink !== '#') {
       mLive.href = project.liveLink;
@@ -923,6 +943,11 @@ function initProjectModal() {
   }
 
   function closeModal() {
+    const mVideo = document.getElementById('modal-project-video');
+    if (mVideo) {
+      mVideo.pause();
+      mVideo.src = '';
+    }
     modal.classList.remove('active');
     document.body.style.overflow = ''; // Resume scrolling
     modal.setAttribute('aria-hidden', 'true');

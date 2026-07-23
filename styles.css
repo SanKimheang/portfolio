@@ -1467,7 +1467,8 @@ header.scrolled {
   position: relative;
 }
 
-.modal-image-wrapper img {
+.modal-image-wrapper img,
+.modal-image-wrapper video {
   width: 100%;
   height: 100%;
   object-fit: cover;
