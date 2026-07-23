@@ -29,6 +29,24 @@ const portfolioData = {
 
   projects: [
     {
+      title: "Real-Time Plastic Detection System",
+      category: "Deep Learning",
+      description: "Designed and deployed a real-time computer vision system to detect and classify plastic waste. Optimized YOLO architecture for edge deployment, achieving high frame-rates and localization accuracy.",
+      tech: ["Python", "YOLO", "OpenCV", "PyTorch", "Reactjs", "FastAPI", "Docker", "MySQL"],
+      image: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&w=800&q=80",
+      liveLink: "#",
+      githubLink: "https://github.com/SanKimheang/plastic-detection"
+    },
+    {
+      title: "Family Planning Unmet Need Predictor",
+      category: "Machine Learning",
+      description: "An interactive, browser-based predictive dashboard that forecasts unmet needs for family planning using demographic surveys. Integrates Logistic Regression, Random Forest, LightGBM, and XGBoost models to compute risk probabilities and reveal key individual drivers.",
+      tech: ["Python", "Scikit-Learn", "LightGBM", "XGBoost", "JavaScript", "Data Visualization"],
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+      liveLink: "family-planning-prediction.html",
+      githubLink: "https://github.com/SanKimheang/prediction-on-unmet-need"
+    },
+    {
       title: "Automated Corporate Sales Dashboard",
       category: "PowerBI",
       description: "An end-to-end interactive dashboard incorporating complex ETL pipelines, star schema data modeling, and custom DAX calculations to track sales, identify market trends, and automate executive reporting.",
@@ -45,15 +63,6 @@ const portfolioData = {
       image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
       liveLink: "#",
       githubLink: "https://github.com/SanKimheang/khmer_sementic_similarity"
-    },
-    {
-      title: "Real-Time Plastic Detection System",
-      category: "Deep Learning",
-      description: "Designed and deployed a real-time computer vision system to detect and classify plastic waste. Optimized YOLO architecture for edge deployment, achieving high frame-rates and localization accuracy.",
-      tech: ["Python", "YOLO", "OpenCV", "PyTorch", "Reactjs", "FastAPI", "Docker", "MySQL"],
-      image: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&w=800&q=80",
-      liveLink: "#",
-      githubLink: "https://github.com/SanKimheang/plastic-detection"
     },
     {
       title: "Electricity Demand Forecasting",

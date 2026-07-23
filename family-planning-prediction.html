@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Planning Unmet Need Predictor | San Kimheang</title>
+  <meta name="description"
+    content="Interactive Machine Learning dashboard predicting the unmet need for family planning. Compare Logistic Regression, Random Forest, LightGBM, and XGBoost models.">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Main Website Stylesheet Reference to reuse variables and core classes -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* CUSTOM INTERACTIVE DASHBOARD STYLES */
+    .dashboard-container {
+      margin-top: 100px;
+      margin-bottom: 60px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 992px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dashboard-card {
+      padding: 30px;
+    }
+
+    .form-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 12px;
+    }
+
+    .form-title i {
+      color: var(--accent-primary);
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 576px) {
+      .grid-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-select-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .form-select-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      appearance: none;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .select-wrapper select:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.15);
+    }
+
+    .select-wrapper::after {
+      content: '\f107';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-muted);
+    }
+
+    /* Result Panel Styling */
+    .result-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(var(--accent-primary-rgb), 0.03), rgba(var(--accent-secondary-rgb), 0.03));
+      border-color: rgba(var(--accent-primary-rgb), 0.15);
+    }
+
+    .radial-gauge {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 20px 0;
+    }
+
+    .radial-gauge svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-bg {
+      fill: none;
+      stroke: var(--bg-tertiary);
+      stroke-width: 12;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: url(#gauge-gradient);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 440;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gauge-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gauge-number {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--text-primary), var(--text-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gauge-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .prediction-badge {
+      display: inline-flex;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      transition: all var(--transition-normal);
+      border: 1px solid transparent;
+    }
+
+    .badge-no-need {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+
+    .badge-spacing-need {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    .badge-limiting-need {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .drivers-list {
+      width: 100%;
+      text-align: left;
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .driver-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .driver-item.risk-driver {
+      border-left: 3px solid var(--accent-secondary);
+    }
+
+    .driver-item.protective-driver {
+      border-left: 3px solid #10b981;
+    }
+
+    .driver-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .risk-driver .driver-icon {
+      color: var(--accent-secondary);
+    }
+
+    .protective-driver .driver-icon {
+      color: #10b981;
+    }
+
+    /* Model Metrics Comparison */
+    .metrics-section {
+      margin-top: 60px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 32px;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 992px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .metrics-table-wrapper {
+      overflow-x: auto;
+    }
+
+    .metrics-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .metrics-table th, .metrics-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .metrics-table th {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    .metrics-table tr.active-row {
+      background: rgba(var(--accent-primary-rgb), 0.05);
+      border-left: 3px solid var(--accent-primary);
+    }
+
+    .metrics-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .metric-bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .chart-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .chart-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .chart-track {
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chart-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.8s ease-out;
+    }
+
+    .chart-fill.accuracy-fill {
+      background: linear-gradient(to right, var(--accent-primary), var(--accent-tertiary));
+    }
+
+    .chart-fill.auc-fill {
+      background: linear-gradient(to right, var(--accent-tertiary), var(--accent-secondary));
+    }
+
+    /* Feature Importance Panel */
+    .feature-importance-card {
+      margin-top: 32px;
+    }
+
+    .importance-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .importance-bar-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 50px;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 576px) {
+      .importance-bar-row {
+        grid-template-columns: 120px 1fr 40px;
+        gap: 10px;
+        font-size: 0.8rem;
+      }
+    }
+
+    .importance-name {
+      color: var(--text-secondary);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .importance-track {
+      height: 12px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .importance-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+      border-radius: var(--radius-full);
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    .importance-value {
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    /* Back Button Layout styling */
+    .back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-primary);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      transition: color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .back-nav:hover {
+      color: var(--accent-secondary);
+      transform: translateX(-4px);
+    }
+
+    .description-text {
+      color: var(--text-secondary);
+      max-width: 800px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Custom Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Custom Trail Cursor -->
+  <div class="custom-cursor-outer"></div>
+  <div class="custom-cursor-inner"></div>
+
+  <!-- Decorative Glowing Blobs -->
+  <div class="glowing-blob blob-1"></div>
+  <div class="glowing-blob blob-2"></div>
+  <div class="glowing-blob blob-3"></div>
+
+  <!-- Glass Header / Navbar -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <span class="logo-symbol">&lt;</span>San Kimheang<span class="logo-symbol">/&gt;</span>
+      </a>
+
+    </div>
+  </header>
+
+  <main class="section-container dashboard-container">
+    <!-- Back Navigation Link -->
+    <a href="index.html" class="back-nav">
+      <i class="fas fa-arrow-left"></i> Back to Portfolio
+    </a>
+
+    <!-- Page Title & Bio -->
+    <div style="margin-bottom: 40px;">
+      <span class="section-subtitle">Interactive ML Tool</span>
+      <h1 class="section-title" style="text-align: left; margin-bottom: 16px;">Family Planning Unmet Need Predictor</h1>
+      <p class="description-text">
+        An unmet need for family planning occurs when a woman is fecund and sexually active, but is not using any method of contraception, despite wanting to space her next child (spacing unmet need) or stop childbearing altogether (limiting unmet need).
+      </p>
+      <p class="description-text">
+        This interactive dashboard implements <strong>four predictive models</strong> (Logistic Regression, Random Forest, LightGBM, and XGBoost) to calculate the likelihood that a woman faces an unmet family planning need. Adjust the demographic parameters in the form below to run real-time inference and view key individual risk factors.
+      </p>
+    </div>
+
+    <!-- Main Grid Dashboard -->
+    <div class="dashboard-grid">
+      
+      <!-- Predictor Form Card -->
+      <div class="dashboard-card glass-card">
+        <h3 class="form-title">
+          <i class="fas fa-sliders-h"></i> Demographic & Health Survey Parameters
+        </h3>
+        
+        <form id="predictor-form">
+          <div class="grid-2col">
+            <!-- Model Selection -->
+            <div class="form-select-group">
+              <label for="model">Machine Learning Model</label>
+              <div class="select-wrapper">
+                <select id="model">
+                  <option value="xgb" selected>XGBoost Ensemble (86.1% Acc)</option>
+                  <option value="lgbm">LightGBM Ensemble (85.8% Acc)</option>
+                  <option value="rf">Random Forest (84.5% Acc)</option>
+                  <option value="lr">Logistic Regression (81.2% Acc)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Age Group -->
+            <div class="form-select-group">
+              <label for="age">Age Group</label>
+              <div class="select-wrapper">
+                <select id="age">
+                  <option value="0">15-19 (Adolescent)</option>
+                  <option value="1" selected>20-24</option>
+                  <option value="2">25-29</option>
+                  <option value="3">30-34</option>
+                  <option value="4">35-39</option>
+                  <option value="5">40-44</option>
+                  <option value="6">45-49</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Education -->
+            <div class="form-select-group">
+              <label for="education">Education Level</label>
+              <div class="select-wrapper">
+                <select id="education">
+                  <option value="0">No Formal Education</option>
+                  <option value="1">Primary School</option>
+                  <option value="2" selected>Secondary School</option>
+                  <option value="3">Higher Education</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Wealth Index -->
+            <div class="form-select-group">
+              <label for="wealth">Wealth Index Quintile</label>
+              <div class="select-wrapper">
+                <select id="wealth">
+                  <option value="0">Poorest</option>
+                  <option value="1">Poorer</option>
+                  <option value="2" selected>Middle Quintile</option>
+                  <option value="3">Richer</option>
+                  <option value="4">Richest</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Residence -->
+            <div class="form-select-group">
+              <label for="residence">Place of Residence</label>
+              <div class="select-wrapper">
+                <select id="residence">
+                  <option value="0">Urban</option>
+                  <option value="1" selected>Rural</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Parity / Living Children -->
+            <div class="form-select-group">
+              <label for="children">Number of Living Children</label>
+              <div class="select-wrapper">
+                <select id="children">
+                  <option value="0">No children</option>
+                  <option value="1">1 child</option>
+                  <option value="2" selected>2 children</option>
+                  <option value="3">3 children</option>
+                  <option value="4">4 or more children</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Exposed to FP Media -->
+            <div class="form-select-group">
+              <label for="media">Family Planning Media Exposure</label>
+              <div class="select-wrapper">
+                <select id="media">
+                  <option value="1" selected>Yes (Radio/TV/Print/Social)</option>
+                  <option value="0">No (No exposure)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Health Facility Visit -->
+            <div class="form-select-group">
+              <label for="facility">Health Facility Visit (Last 12m)</label>
+              <div class="select-wrapper">
+                <select id="facility">
+                  <option value="1">Yes (Visited clinic/health post)</option>
+                  <option value="0" selected>No (No visit/outreach)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desire for more children -->
+          <div class="form-select-group">
+            <label for="desire">Reproductive Desire</label>
+            <div class="select-wrapper">
+              <select id="desire">
+                <option value="0">Wants a child soon (within 2 years)</option>
+                <option value="1" selected>Wants a child later (wants to space births by 2+ years)</option>
+                <option value="2">Wants no more children / completed family (wants to limit)</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Predictor Results Panel -->
+      <div class="dashboard-card glass-card result-card">
+        <h3 class="form-title" style="width: 100%; text-align: center;">
+          <i class="fas fa-stethoscope"></i> Diagnostic Prediction Output
+        </h3>
+
+        <!-- Probability Ring Gauge -->
+        <div class="radial-gauge">
+          <svg>
+            <defs>
+              <linearGradient id="gauge-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="var(--accent-primary)"></stop>
+                <stop offset="50%" stop-color="var(--accent-tertiary)"></stop>
+                <stop offset="100%" stop-color="var(--accent-secondary)"></stop>
+              </linearGradient>
+            </defs>
+            <circle class="gauge-bg" cx="90" cy="90" r="70"></circle>
+            <circle class="gauge-fill" id="gauge-fill-circle" cx="90" cy="90" r="70"></circle>
+          </svg>
+          <div class="gauge-value">
+            <span class="gauge-number" id="probability-value">0%</span>
+            <span class="gauge-label">Probability</span>
+          </div>
+        </div>
+
+        <!-- Prediction Text Status Badge -->
+        <span class="prediction-badge" id="prediction-badge">Calculating...</span>
+
+        <!-- Explanation Drivers Title -->
+        <h4 style="text-align: left; width: 100%; font-family: var(--font-heading); font-size: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; margin-top: 10px;">
+          <i class="fas fa-project-diagram"></i> Key Explanatory Drivers (SHAP values)
+        </h4>
+
+        <!-- Dynamic Explainer List -->
+        <div class="drivers-list" id="drivers-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Section for Feature Importance & Performance Metrics -->
+    <div class="metrics-section">
+      <div class="section-header" style="margin-bottom: 30px; align-items: flex-start; text-align: left;">
+        <span class="section-subtitle">Performance & Interpretability</span>
+        <h2 class="section-title">Model Comparison & Features</h2>
+        <div class="section-line" style="margin-top: 8px;"></div>
+      </div>
+
+      <div class="metrics-grid">
+        
+        <!-- Table Comparison -->
+        <div class="dashboard-card glass-card">
+          <h3 class="form-title"><i class="fas fa-chart-line"></i> Overall Performance Comparison</h3>
+          <div class="metrics-table-wrapper">
+            <table class="metrics-table">
+              <thead>
+                <tr>
+                  <th>Model Algorithm</th>
+                  <th>Accuracy</th>
+                  <th>AUC-ROC</th>
+                  <th>Precision</th>
+                  <th>Recall</th>
+                  <th>F1-Score</th>
+                </tr>
+              </thead>
+              <tbody id="metrics-table-body">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div style="margin-top: 24px; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+            <p id="model-description-box">
+              Select variables or select an algorithm above to compare its theoretical performance statistics and architectural description.
+            </p>
+          </div>
+        </div>
+
+        <!-- Dynamic Feature Importance Bar chart -->
+        <div class="dashboard-card glass-card">
+          <h3 class="form-title"><i class="fas fa-chart-bar"></i> Feature Importance (<span id="importance-model-name">XGBoost</span>)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+            Relative importance of survey parameters in informing predictions for the active model.
+          </p>
+          
+          <div class="importance-chart" id="importance-chart">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <p>&copy; 2026 San Kimheang. Built with passion & pure web technologies.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="portfolio-data.js"></script>
+  <script src="family-planning-prediction.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Theme Switcher Syncing
+      const themeToggle = document.getElementById('theme-toggle');
+      if (themeToggle) {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+          updateThemeIcon(newTheme);
+          document.body.style.transition = 'background-color 0.4s ease, color 0.4s ease';
+        });
+      }
+
+      function updateThemeIcon(theme) {
+        const icon = themeToggle.querySelector('i');
+        if (!icon) return;
+        if (theme === 'dark') {
+          icon.className = 'fas fa-sun';
+          icon.style.color = '#ffd43b';
+        } else {
+          icon.className = 'fas fa-moon';
+          icon.style.color = '';
+        }
+      }
+
+      // 2. Custom cursor tracker (similar to script.js for UI unity)
+      const outer = document.querySelector('.custom-cursor-outer');
+      const inner = document.querySelector('.custom-cursor-inner');
+      if (outer && inner) {
+        window.addEventListener('mousemove', (e) => {
+          outer.style.left = `${e.clientX}px`;
+          outer.style.top = `${e.clientY}px`;
+          inner.style.left = `${e.clientX}px`;
+          inner.style.top = `${e.clientY}px`;
+        });
+        const hoverables = 'a, button, select, input';
+        document.addEventListener('mouseover', (e) => {
+          if (e.target.closest(hoverables)) {
+            document.body.classList.add('cursor-hover');
+          }
+        });
+        document.addEventListener('mouseout', (e) => {
+          if (e.target.closest(hoverables)) {
+            document.body.classList.remove('cursor-hover');
+          }
+        });
+      }
+
+      // 3. Scroll progress bar & header solidify
+      const header = document.querySelector('header');
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        
+        const scrollProgress = document.getElementById('scroll-progress');
+        if (scrollProgress) {
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const scrollPct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          scrollProgress.style.width = `${scrollPct}%`;
+        }
+
+        if (header) {
+          if (scrollTop > 50) {
+            header.classList.add('scrolled');
+          } else {
+            header.classList.remove('scrolled');
+          }
+        }
+      });
+
+      // 4. Populate model metrics table once
+      const tableBody = document.getElementById('metrics-table-body');
+      if (tableBody) {
+        tableBody.innerHTML = Object.entries(modelMetrics).map(([key, val]) => `
+          <tr id="row-${key}">
+            <td style="font-weight: 600; color: var(--text-primary);">${val.name}</td>
+            <td>${(val.accuracy * 100).toFixed(1)}%</td>
+            <td>${val.auc.toFixed(3)}</td>
+            <td>${(val.precision * 100).toFixed(1)}%</td>
+            <td>${(val.recall * 100).toFixed(1)}%</td>
+            <td>${(val.f1 * 100).toFixed(1)}%</td>
+          </tr>
+        `).join('');
+      }
+
+      // 5. Setup interaction bindings
+      const form = document.getElementById('predictor-form');
+      const inputsList = form.querySelectorAll('select');
+      
+      inputsList.forEach(input => {
+        input.addEventListener('change', runInference);
+      });
+
+      // Initial run
+      runInference();
+
+      function runInference() {
+        const modelName = document.getElementById('model').value;
+        
+        // Assemble inputs from dropdown values
+        const inputs = {
+          age: parseInt(document.getElementById('age').value, 10),
+          education: parseInt(document.getElementById('education').value, 10),
+          wealth: parseInt(document.getElementById('wealth').value, 10),
+          residence: parseInt(document.getElementById('residence').value, 10),
+          children: parseInt(document.getElementById('children').value, 10),
+          media: parseInt(document.getElementById('media').value, 10),
+          facility: parseInt(document.getElementById('facility').value, 10),
+          desire: parseInt(document.getElementById('desire').value, 10)
+        };
+
+        // Run prediction
+        const result = predictUnmetNeed(modelName, inputs);
+
+        // Update UI Probability Gauge
+        const percent = Math.round(result.probability * 100);
+        document.getElementById('probability-value').textContent = `${percent}%`;
+        
+        // Ring offset math (radius = 70, circumference = 2 * PI * r = ~439.8, round to 440)
+        const circumference = 440;
+        const offset = circumference - (result.probability * circumference);
+        document.getElementById('gauge-fill-circle').style.strokeDashoffset = offset;
+
+        // Update badge classification
+        const badge = document.getElementById('prediction-badge');
+        badge.textContent = result.classification;
+        
+        // Reset classes
+        badge.className = 'prediction-badge';
+        if (result.probability < 0.50) {
+          badge.classList.add('badge-no-need');
+          badge.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 6px;"></i> No Unmet Need (Met/No Need)`;
+        } else {
+          if (result.classification.includes('Spacing')) {
+            badge.classList.add('badge-spacing-need');
+            badge.innerHTML = `<i class="fas fa-exclamation-triangle" style="margin-right: 6px;"></i> Unmet Need (Spacing)`;
+          } else {
+            badge.classList.add('badge-limiting-need');
+            badge.innerHTML = `<i class="fas fa-exclamation-triangle" style="margin-right: 6px;"></i> Unmet Need (Limiting)`;
+          }
+        }
+
+        // Update drivers explainer cards
+        const driversContainer = document.getElementById('drivers-list');
+        driversContainer.innerHTML = result.drivers.map(driver => `
+          <div class="driver-item ${driver.positive ? 'protective-driver' : 'risk-driver'}">
+            <div class="driver-icon">
+              <i class="${driver.positive ? 'fas fa-arrow-circle-down' : 'fas fa-arrow-circle-up'}"></i>
+            </div>
+            <div>${driver.text}</div>
+          </div>
+        `).join('');
+
+        // Highlight active model row in the comparison table
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(r => r.classList.remove('active-row'));
+        
+        const activeRow = document.getElementById(`row-${modelName}`);
+        if (activeRow) activeRow.classList.add('active-row');
+
+        // Update algorithm description box
+        const descriptionBox = document.getElementById('model-description-box');
+        descriptionBox.innerHTML = `
+          <strong>Algorithm Architecture:</strong> ${modelMetrics[modelName].description}
+        `;
+
+        // Update Feature Importances Title and Bars
+        document.getElementById('importance-model-name').textContent = modelMetrics[modelName].name;
+        
+        const importanceChart = document.getElementById('importance-chart');
+        const importanceData = featureImportances[modelName];
+        
+        importanceChart.innerHTML = importanceData.map(data => `
+          <div class="importance-bar-row">
+            <span class="importance-name" title="${data.feature}">${data.feature}</span>
+            <div class="importance-track">
+              <div class="importance-fill" style="width: ${data.importance}%"></div>
+            </div>
+            <span class="importance-value">${data.importance}%</span>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+
+</html>
